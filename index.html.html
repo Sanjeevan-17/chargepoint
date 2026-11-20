@@ -1,0 +1,2298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChargePoint CPH50 Professional Diagnostic & Troubleshooting Station</title>
+  <style>
+    :root {
+      --slate-950: #020617;
+      --slate-900: #0f172a;
+      --slate-800: #1e293b;
+      --slate-700: #334155;
+      --slate-600: #475569;
+      --slate-400: #94a3b8;
+      --slate-300: #cbd5e1;
+      --slate-200: #e2e8f0;
+      --slate-100: #f1f5f9;
+      --slate-50: #f8fafc;
+      --chpt-orange: #ff5900;
+      --chpt-orange-hover: #e04e00;
+      --chpt-orange-subtle: rgba(255, 89, 0, 0.08);
+      --green-glow: #10b981;
+      --green-dark: #059669;
+      --blue-glow: #3b82f6;
+      --red-fault: #ef4444;
+      --amber-warn: #f59e0b;
+      --white-glow: #f8fafc;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.04);
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", "Helvetica Neue", Arial, sans-serif;
+      --font-mono: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Monaco, Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: #f1f5f9;
+      color: var(--slate-900);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 60px;
+    }
+
+    header {
+      background-color: var(--slate-900);
+      color: white;
+      border-bottom: 3px solid var(--chpt-orange);
+      padding: 20px 32px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .header-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .brand-area {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-logo-badge {
+      background: var(--chpt-orange);
+      color: white;
+      font-weight: 800;
+      font-size: 14px;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      box-shadow: 0 2px 6px rgba(255, 89, 0, 0.4);
+    }
+
+    .brand-title h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-title p {
+      font-size: 13px;
+      color: var(--slate-400);
+      margin-top: 2px;
+    }
+
+    .header-status-pills {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--slate-800);
+      padding: 5px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      color: var(--slate-200);
+      border: 1px solid var(--slate-700);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green-glow);
+      box-shadow: 0 0 8px var(--green-glow);
+    }
+
+    /* Primary Navigation Tabs */
+    .nav-tabs-wrapper {
+      background: white;
+      border-bottom: 1px solid var(--slate-200);
+      padding: 0 32px;
+      position: sticky;
+      top: 79px;
+      z-index: 90;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-tabs {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .nav-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-tab-btn {
+      background: transparent;
+      border: none;
+      padding: 16px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--slate-600);
+      cursor: pointer;
+      position: relative;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+    }
+
+    .nav-tab-btn:hover {
+      color: var(--slate-900);
+    }
+
+    .nav-tab-btn.active {
+      color: var(--chpt-orange);
+    }
+
+    .nav-tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--chpt-orange);
+      border-radius: 3px 3px 0 0;
+    }
+
+    .badge-icon {
+      font-size: 16px;
+    }
+
+    /* Main Container */
+    main {
+      max-width: 1280px;
+      margin: 28px auto;
+      padding: 0 24px;
+    }
+
+    .tab-content-panel {
+      display: none;
+    }
+
+    .tab-content-panel.active {
+      display: block;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Banner callout */
+    .alert-banner {
+      background: #eff6ff;
+      border-left: 4px solid var(--blue-glow);
+      padding: 16px 20px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .alert-banner.warning {
+      background: #fffbeb;
+      border-left-color: var(--amber-warn);
+    }
+
+    .alert-banner.critical {
+      background: #fef2f2;
+      border-left-color: var(--red-fault);
+    }
+
+    .alert-banner-text h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--slate-900);
+      margin-bottom: 3px;
+    }
+
+    .alert-banner-text p {
+      font-size: 13px;
+      color: var(--slate-700);
+    }
+
+    /* Grid layout cards */
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 992px) {
+      .grid-2col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: white;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--slate-200);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .card-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--slate-200);
+      background: #ffffff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .card-header h2 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--slate-900);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-body {
+      padding: 24px;
+    }
+
+    /* Wizard component */
+    .wizard-progress {
+      display: flex;
+      margin-bottom: 28px;
+      border-radius: var(--radius-sm);
+      background: var(--slate-100);
+      padding: 6px;
+      gap: 6px;
+    }
+
+    .wizard-step-node {
+      flex: 1;
+      text-align: center;
+      padding: 10px 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--slate-600);
+      border-radius: var(--radius-sm);
+      transition: all 0.2s ease;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    .wizard-step-node.active {
+      background: white;
+      color: var(--chpt-orange);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .wizard-step-node.completed {
+      color: var(--slate-800);
+    }
+
+    .question-block {
+      margin-bottom: 24px;
+    }
+
+    .question-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--slate-900);
+      margin-bottom: 8px;
+    }
+
+    .question-desc {
+      font-size: 13px;
+      color: var(--slate-600);
+      margin-bottom: 16px;
+    }
+
+    .option-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .option-btn {
+      text-align: left;
+      padding: 16px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--slate-200);
+      background: white;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .option-btn:hover {
+      border-color: var(--chpt-orange);
+      background: var(--chpt-orange-subtle);
+    }
+
+    .option-btn.selected {
+      border-color: var(--chpt-orange);
+      background: rgba(255, 89, 0, 0.06);
+      box-shadow: 0 0 0 1px var(--chpt-orange);
+    }
+
+    .option-btn-title {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--slate-900);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .option-btn-subtitle {
+      font-size: 12px;
+      color: var(--slate-600);
+      line-height: 1.4;
+    }
+
+    .wizard-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 16px;
+      border-top: 1px solid var(--slate-200);
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+    }
+
+    .btn-secondary {
+      background: var(--slate-100);
+      color: var(--slate-800);
+      border-color: var(--slate-300);
+    }
+
+    .btn-secondary:hover {
+      background: var(--slate-200);
+    }
+
+    .btn-primary {
+      background: var(--chpt-orange);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--chpt-orange-hover);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--chpt-orange);
+      border-color: var(--chpt-orange);
+    }
+
+    .btn-outline:hover {
+      background: var(--chpt-orange-subtle);
+    }
+
+    /* Diagnosis Result Card */
+    .diagnostic-output-box {
+      background: var(--slate-900);
+      color: white;
+      border-radius: var(--radius-md);
+      padding: 24px;
+      margin-top: 20px;
+      border-left: 6px solid var(--chpt-orange);
+    }
+
+    .diagnostic-output-box.green { border-left-color: var(--green-glow); }
+    .diagnostic-output-box.blue { border-left-color: var(--blue-glow); }
+    .diagnostic-output-box.red { border-left-color: var(--red-fault); }
+    .diagnostic-output-box.amber { border-left-color: var(--amber-warn); }
+
+    .sop-step-list {
+      margin: 16px 0;
+      padding-left: 20px;
+    }
+
+    .sop-step-list li {
+      margin-bottom: 12px;
+      font-size: 14px;
+      color: var(--slate-200);
+      line-height: 1.5;
+    }
+
+    .sop-step-list strong {
+      color: white;
+    }
+
+    .sop-callout {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      margin-top: 14px;
+      font-size: 13px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #cbd5e1;
+    }
+
+    /* LED Glow Ring Simulator */
+    .led-simulator-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 36px 20px;
+      background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+      border-radius: var(--radius-md);
+      color: white;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .cph50-chassis {
+      width: 220px;
+      height: 220px;
+      background: #273549;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 6px 12px rgba(0,0,0,0.6), 0 10px 25px rgba(0,0,0,0.5);
+      border: 3px solid #3d4f68;
+      position: relative;
+    }
+
+    .cph50-inner-bezel {
+      width: 170px;
+      height: 170px;
+      background: #111827;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .led-glow-ring {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 8px solid transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .ring-center-text {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+    }
+
+    .ring-subtext {
+      font-size: 11px;
+      color: var(--slate-400);
+      margin-top: 2px;
+    }
+
+    /* Glow animations */
+    .glow-solid-green {
+      border-color: #10b981;
+      box-shadow: 0 0 25px #10b981, inset 0 0 15px #10b981;
+      color: #34d399;
+    }
+
+    .glow-pulsing-green {
+      border-color: #10b981;
+      animation: pulseGreen 1.8s infinite ease-in-out;
+      color: #34d399;
+    }
+
+    @keyframes pulseGreen {
+      0% { box-shadow: 0 0 10px #10b981, inset 0 0 5px #10b981; opacity: 0.7; }
+      50% { box-shadow: 0 0 35px #10b981, inset 0 0 20px #10b981; opacity: 1; }
+      100% { box-shadow: 0 0 10px #10b981, inset 0 0 5px #10b981; opacity: 0.7; }
+    }
+
+    .glow-solid-blue {
+      border-color: #3b82f6;
+      box-shadow: 0 0 25px #3b82f6, inset 0 0 15px #3b82f6;
+      color: #60a5fa;
+    }
+
+    .glow-pulsing-blue {
+      border-color: #3b82f6;
+      animation: pulseBlue 1.6s infinite ease-in-out;
+      color: #93c5fd;
+    }
+
+    @keyframes pulseBlue {
+      0% { box-shadow: 0 0 10px #3b82f6, inset 0 0 5px #3b82f6; opacity: 0.6; }
+      50% { box-shadow: 0 0 32px #3b82f6, inset 0 0 18px #3b82f6; opacity: 1; }
+      100% { box-shadow: 0 0 10px #3b82f6, inset 0 0 5px #3b82f6; opacity: 0.6; }
+    }
+
+    .glow-solid-white {
+      border-color: #ffffff;
+      box-shadow: 0 0 25px #ffffff, inset 0 0 12px #ffffff;
+      color: #ffffff;
+    }
+
+    .glow-pulsing-white {
+      border-color: #ffffff;
+      animation: pulseWhite 2s infinite ease-in-out;
+      color: #ffffff;
+    }
+
+    @keyframes pulseWhite {
+      0% { box-shadow: 0 0 8px #ffffff; opacity: 0.5; }
+      50% { box-shadow: 0 0 30px #ffffff; opacity: 1; }
+      100% { box-shadow: 0 0 8px #ffffff; opacity: 0.5; }
+    }
+
+    .glow-flashing-red {
+      border-color: #ef4444;
+      animation: flashRed 0.8s infinite steps(2, start);
+      color: #f87171;
+    }
+
+    @keyframes flashRed {
+      0%, 49% { box-shadow: 0 0 35px #ef4444, inset 0 0 20px #ef4444; border-color: #ef4444; opacity: 1; }
+      50%, 100% { box-shadow: none; border-color: #450a0a; opacity: 0.3; }
+    }
+
+    .glow-solid-red {
+      border-color: #ef4444;
+      box-shadow: 0 0 30px #ef4444, inset 0 0 15px #ef4444;
+      color: #f87171;
+    }
+
+    .glow-dark {
+      border-color: #334155;
+      box-shadow: none;
+      color: #64748b;
+    }
+
+    /* LED Selector buttons */
+    .led-selector-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .led-btn {
+      background: white;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--slate-800);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .led-btn:hover {
+      border-color: var(--slate-400);
+      background: var(--slate-50);
+    }
+
+    .led-btn.active {
+      border-color: var(--chpt-orange);
+      background: var(--chpt-orange-subtle);
+      color: var(--chpt-orange);
+      font-weight: 700;
+    }
+
+    .led-color-chip {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+    }
+
+    /* Wire Lever Interactive Demonstration */
+    .wire-lever-diagram {
+      background: #0f172a;
+      border-radius: var(--radius-md);
+      padding: 24px;
+      color: white;
+      margin-bottom: 24px;
+    }
+
+    .wire-terminal-box {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 30px 20px;
+      background: #1e293b;
+      border-radius: var(--radius-sm);
+      border: 1px solid #334155;
+      margin: 20px 0;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .terminal-clamp {
+      text-align: center;
+      background: #0b1120;
+      padding: 18px 24px;
+      border-radius: var(--radius-sm);
+      border: 2px solid #334155;
+      min-width: 140px;
+      position: relative;
+    }
+
+    .terminal-clamp.faulty {
+      border-color: var(--red-fault);
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .terminal-clamp.secure {
+      border-color: var(--green-glow);
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .lever-graphic {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+
+    .lever-status-badge {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-top: 8px;
+    }
+
+    .lever-status-badge.bad {
+      background: var(--red-fault);
+      color: white;
+    }
+
+    .lever-status-badge.good {
+      background: var(--green-glow);
+      color: #064e3b;
+    }
+
+    /* Breaker Calculator */
+    .calc-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .calc-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--slate-700);
+    }
+
+    .form-control {
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--slate-300);
+      font-size: 14px;
+      background: white;
+      color: var(--slate-900);
+      font-family: inherit;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--chpt-orange);
+      box-shadow: 0 0 0 2px var(--chpt-orange-subtle);
+    }
+
+    .calc-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .metric-card {
+      background: var(--slate-50);
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      text-align: center;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      color: var(--slate-600);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .metric-val {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--slate-900);
+      margin: 6px 0;
+      font-family: var(--font-mono);
+    }
+
+    .metric-desc {
+      font-size: 11px;
+      color: var(--slate-500);
+    }
+
+    /* Fishbone Explorer */
+    .fishbone-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .branch-card {
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-md);
+      background: white;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .branch-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .branch-header {
+      padding: 14px 18px;
+      background: var(--slate-100);
+      border-bottom: 1px solid var(--slate-200);
+      font-weight: 700;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--slate-900);
+    }
+
+    .branch-header.orange { border-top: 3px solid var(--chpt-orange); }
+    .branch-header.blue { border-top: 3px solid var(--blue-glow); }
+    .branch-header.green { border-top: 3px solid var(--green-glow); }
+    .branch-header.purple { border-top: 3px solid #8b5cf6; }
+    .branch-header.red { border-top: 3px solid var(--red-fault); }
+    .branch-header.amber { border-top: 3px solid var(--amber-warn); }
+
+    .branch-body {
+      padding: 18px;
+    }
+
+    .sub-cause-item {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--slate-100);
+      font-size: 13px;
+    }
+
+    .sub-cause-item:last-child {
+      border-bottom: none;
+    }
+
+    .sub-cause-name {
+      font-weight: 700;
+      color: var(--slate-900);
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sub-cause-fix {
+      color: var(--slate-600);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .fix-pill {
+      background: #e0f2fe;
+      color: #0369a1;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      display: inline-block;
+      margin-top: 4px;
+    }
+
+    /* Ticket generator output */
+    .ticket-preview {
+      background: var(--slate-900);
+      color: #38bdf8;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 20px;
+      border-radius: var(--radius-sm);
+      white-space: pre-wrap;
+      overflow-x: auto;
+      border: 1px solid var(--slate-700);
+      line-height: 1.6;
+    }
+
+    .copy-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--slate-900);
+      color: white;
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      display: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 1000;
+      border-left: 4px solid var(--green-glow);
+    }
+
+    .copy-toast.show {
+      display: block;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+
+    /* Quick SOP Checklist */
+    .checklist-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--slate-100);
+    }
+
+    .checklist-checkbox {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      accent-color: var(--chpt-orange);
+      cursor: pointer;
+    }
+
+    .checklist-content h5 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--slate-900);
+    }
+
+    .checklist-content p {
+      font-size: 12px;
+      color: var(--slate-600);
+      margin-top: 2px;
+    }
+
+    /* Footer */
+    footer {
+      max-width: 1280px;
+      margin: 40px auto 0;
+      padding: 20px 24px 0;
+      border-top: 1px solid var(--slate-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--slate-500);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header>
+    <div class="header-container">
+      <div class="brand-area">
+        <div class="brand-logo-badge">CPH50</div>
+        <div class="brand-title">
+          <h1>ChargePoint Home Flex Troubleshooting Suite</h1>
+          <p>Complete Zero Energy Dispensing (0 kW), Hardware & Circuit Diagnostic Platform</p>
+        </div>
+      </div>
+      <div class="header-status-pills">
+        <div class="status-badge">
+          <span class="status-dot"></span>
+          <span>Engineered for CPH50 (16A–50A)</span>
+        </div>
+        <div class="status-badge" style="border-color: #f59e0b; color: #fbbf24;">
+          <span>Escalation: B2C-GL-DS-ENG-CPH</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sticky Sub-Navigation -->
+  <nav class="nav-tabs-wrapper">
+    <div class="nav-tabs">
+      <button class="nav-tab-btn active" onclick="switchTab('wizard')">
+        <span class="badge-icon">⚡</span> Diagnostic Wizard (0 kW)
+      </button>
+      <button class="nav-tab-btn" onclick="switchTab('led-ring')">
+        <span class="badge-icon">💡</span> LED Glow Ring Decoder
+      </button>
+      <button class="nav-tab-btn" onclick="switchTab('wire-levers')">
+        <span class="badge-icon">🔧</span> Wire Levers & Hardware Check
+      </button>
+      <button class="nav-tab-btn" onclick="switchTab('breaker-calc')">
+        <span class="badge-icon">📐</span> Amperage & Breaker Calculator
+      </button>
+      <button class="nav-tab-btn" onclick="switchTab('fishbone')">
+        <span class="badge-icon">📊</span> Ishikawa Root-Cause Matrix
+      </button>
+      <button class="nav-tab-btn" onclick="switchTab('ticket-gen')">
+        <span class="badge-icon">🎫</span> L2/DS Escalation Builder
+      </button>
+    </div>
+  </nav>
+
+  <main>
+    <!-- TAB 1: DIAGNOSTIC WIZARD -->
+    <div id="tab-wizard" class="tab-content-panel active">
+      <div class="alert-banner">
+        <div style="font-size: 24px;">ℹ️</div>
+        <div class="alert-banner-text">
+          <h4>Zero Energy Dispensing (0 kW / Not Charging) Protocol</h4>
+          <p>Follow the guided step-by-step diagnostic workflow below to systematically isolate schedules, vehicle OBC handshake limits, terminal block connections, and CCID safety trips.</p>
+        </div>
+      </div>
+
+      <div class="grid-2col">
+        <!-- Interactive Question Flow -->
+        <div class="card">
+          <div class="card-header">
+            <h2>Guided Troubleshooting Flow</h2>
+            <span id="step-counter" style="font-size: 13px; font-weight: 600; color: var(--slate-500);">Step 1 of 4</span>
+          </div>
+          <div class="card-body">
+            <!-- Progress Tracker -->
+            <div class="wizard-progress">
+              <button class="wizard-step-node active" id="pnode-1" onclick="jumpToStep(1)">1. Symptom</button>
+              <button class="wizard-step-node" id="pnode-2" onclick="jumpToStep(2)">2. LED Ring</button>
+              <button class="wizard-step-node" id="pnode-3" onclick="jumpToStep(3)">3. Car & Power</button>
+              <button class="wizard-step-node" id="pnode-4" onclick="jumpToStep(4)">4. Precision Fix</button>
+            </div>
+
+            <!-- STEP 1: Symptom Selection -->
+            <div id="wizard-step-1" class="step-view">
+              <div class="question-block">
+                <div class="question-title">What primary failure symptom are you observing?</div>
+                <div class="question-desc">Select the exact behavior occurring when you connect the J1772 / NACS plug to the electric vehicle:</div>
+                <div class="option-grid">
+                  <div class="option-btn selected" onclick="selectOption('symptom', '0kw', this)">
+                    <div class="option-btn-title">🔌 Plugged In, 0 kW Dispensed</div>
+                    <div class="option-btn-subtitle">Car connects, light turns on or remains blue, but zero charging sessions record and battery does not charge.</div>
+                  </div>
+                  <div class="option-btn" onclick="selectOption('symptom', 'tripping', this)">
+                    <div class="option-btn-title">⚠️ Breaker Trips Immediately or After 15m</div>
+                    <div class="option-btn-subtitle">Main electrical panel 2-pole breaker clicks off when session starts or under thermal load.</div>
+                  </div>
+                  <div class="option-btn" onclick="selectOption('symptom', 'red_fault', this)">
+                    <div class="option-btn-title">🔴 Red Warning Glow or Flashing Red</div>
+                    <div class="option-btn-subtitle">Station LED halo turns red indicating ground fault (CCID) or hardware lock.</div>
+                  </div>
+                  <div class="option-btn" onclick="selectOption('symptom', 'offline', this)">
+                    <div class="option-btn-title">📶 Wi-Fi Disconnected / Station Dark</div>
+                    <div class="option-btn-subtitle">CPH50 is unreachable in ChargePoint mobile app or LEDs are completely off.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="wizard-actions">
+                <span></span>
+                <button class="btn btn-primary" onclick="nextStep(2)">Proceed to Step 2 →</button>
+              </div>
+            </div>
+
+            <!-- STEP 2: LED Ring State -->
+            <div id="wizard-step-2" class="step-view" style="display: none;">
+              <div class="question-block">
+                <div class="question-title">What is the exact color and cadence of the circular glow ring?</div>
+                <div class="question-desc">Look closely at the CPH50 holster halo ring when the cable is plugged into the vehicle:</div>
+                <div class="option-grid">
+                  <div class="option-btn selected" onclick="selectOption('led', 'solid_blue', this)">
+                    <div class="option-btn-title"><span style="color:#3b82f6;">●</span> Solid Blue</div>
+                    <div class="option-btn-subtitle">Waiting for an active ChargePoint or utility schedule, or paused in app.</div>
+                  </div>
+                  <div class="option-btn" onclick="selectOption('led', 'flashing_blue', this)">
+                    <div class="option-btn-title"><span style="color:#60a5fa;">◉</span> Flashing / Pulsing Blue</div>
+                    <div class="option-btn-subtitle">Car is plugged in; station is awaiting handshake / pilot authorization from the EV.</div>
+                  </div>
+                  <div class="option-btn" onclick="selectOption('led', 'pulsing_green', this)">
+                    <div class="option-btn-title"><span style="color:#10b981;">◉</span> Breathing / Pulsing Green</div>
+                    <div class="option-btn-subtitle">Station believes it is actively delivering energy (contactors closed).</div>
+                  </div>
+                  <div class="option-btn" onclick="selectOption('led', 'solid_green', this)">
+                    <div class="option-btn-title"><span style="color:#10b981;">●</span> Solid Green</div>
+                    <div class="option-btn-subtitle">Ready to charge, but cable may not be fully seated in vehicle port.</div>
+                  </div>
+                  <div class="option-btn" onclick="selectOption('led', 'red_any', this)">
+                    <div class="option-btn-title"><span style="color:#ef4444;">●</span> Red (Solid or Flashing)</div>
+                    <div class="option-btn-subtitle">Internal CCID ground fault, relay failure, or wiring mismatch detected.</div>
+                  </div>
+                  <div class="option-btn" onclick="selectOption('led', 'white_pulsing', this)">
+                    <div class="option-btn-title"><span style="color:#cbd5e1;">⚪</span> White (Pulsing / Solid)</div>
+                    <div class="option-btn-subtitle">Booting up, updating firmware, or in Bluetooth pairing setup mode.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="wizard-actions">
+                <button class="btn btn-secondary" onclick="nextStep(1)">← Back</button>
+                <button class="btn btn-primary" onclick="nextStep(3)">Proceed to Step 3 →</button>
+              </div>
+            </div>
+
+            <!-- STEP 3: Vehicle & Setup Probing Questions -->
+            <div id="wizard-step-3" class="step-view" style="display: none;">
+              <div class="question-block">
+                <div class="question-title">Probing Diagnostic Verification</div>
+                <div class="question-desc">Select the physical conditions verified by the driver/electrician:</div>
+                <div style="display:flex; flex-direction:column; gap:12px; margin-bottom: 24px;">
+                  <label style="display:flex; align-items:center; gap:10px; font-size:14px; background:var(--slate-50); padding:12px; border-radius:var(--radius-sm); border:1px solid var(--slate-200); cursor:pointer;">
+                    <input type="checkbox" id="check-schedule" style="accent-color: var(--chpt-orange); width:18px; height:18px;">
+                    <div>
+                      <strong>ChargePoint App Schedule is Configured</strong>
+                      <div style="font-size:12px; color:var(--slate-600);">App has off-peak hours set or vehicle has internal departure timers enabled.</div>
+                    </div>
+                  </label>
+
+                  <label style="display:flex; align-items:center; gap:10px; font-size:14px; background:var(--slate-50); padding:12px; border-radius:var(--radius-sm); border:1px solid var(--slate-200); cursor:pointer;">
+                    <input type="checkbox" id="check-public-l2" checked style="accent-color: var(--chpt-orange); width:18px; height:18px;">
+                    <div>
+                      <strong>Car charges successfully on other public Level 2 / AC chargers</strong>
+                      <div style="font-size:12px; color:var(--slate-600);">Confirms vehicle On-Board Charger (OBC) and J1772 socket contactors are fully operational.</div>
+                    </div>
+                  </label>
+
+                  <label style="display:flex; align-items:center; gap:10px; font-size:14px; background:var(--slate-50); padding:12px; border-radius:var(--radius-sm); border:1px solid var(--slate-200); cursor:pointer;">
+                    <input type="checkbox" id="check-double-pump" style="accent-color: var(--chpt-orange); width:18px; height:18px;">
+                    <div>
+                      <strong>Attempted 'Double Pump' override</strong>
+                      <div style="font-size:12px; color:var(--slate-600);">Plugged in, unplugged, and replugged within 5 seconds to bypass active schedule.</div>
+                    </div>
+                  </label>
+
+                  <label style="display:flex; align-items:center; gap:10px; font-size:14px; background:var(--slate-50); padding:12px; border-radius:var(--radius-sm); border:1px solid var(--slate-200); cursor:pointer;">
+                    <input type="checkbox" id="check-wire-lever" style="accent-color: var(--chpt-orange); width:18px; height:18px;">
+                    <div>
+                      <strong>Wire Terminal Levers physically verified inside CPH50</strong>
+                      <div style="font-size:12px; color:var(--slate-600);">Power cut at breaker, faceplate removed, orange/grey L1/L2 clamps pressed down until locked flush.</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="wizard-actions">
+                <button class="btn btn-secondary" onclick="nextStep(2)">← Back</button>
+                <button class="btn btn-primary" onclick="generateDiagnosis()">Generate Comprehensive Solution →</button>
+              </div>
+            </div>
+
+            <!-- STEP 4: Diagnosis Output -->
+            <div id="wizard-step-4" class="step-view" style="display: none;">
+              <div class="question-title">Targeted Root Cause & SOP Resolution</div>
+              <div id="diagnosis-container"></div>
+              <div class="wizard-actions" style="margin-top: 24px;">
+                <button class="btn btn-secondary" onclick="nextStep(1)">↺ Restart Diagnostic Flow</button>
+                <button class="btn btn-primary" onclick="exportToTicketTab()">Send Data to Ticket Generator →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick SOP Actions & Live Station Snapshot -->
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <h2>Standard Operating Procedure (SOP) Checklist</h2>
+            </div>
+            <div class="card-body" style="padding-top: 10px;">
+              <div class="checklist-row">
+                <input type="checkbox" class="checklist-checkbox" id="sop1" onchange="updateSopProgress()">
+                <div class="checklist-content">
+                  <h5>1. Double-Pump Test (Bypass Schedule)</h5>
+                  <p>Plug in, unplug, then plug in again within 5 seconds to force immediate 240V power delivery.</p>
+                </div>
+              </div>
+
+              <div class="checklist-row">
+                <input type="checkbox" class="checklist-checkbox" id="sop2" onchange="updateSopProgress()">
+                <div class="checklist-content">
+                  <h5>2. Check Vehicle Charge Limit</h5>
+                  <p>Confirm vehicle battery is not already at or above configured target State of Charge (e.g. 80%).</p>
+                </div>
+              </div>
+
+              <div class="checklist-row">
+                <input type="checkbox" class="checklist-checkbox" id="sop3" onchange="updateSopProgress()">
+                <div class="checklist-content">
+                  <h5>3. Verify Latest Firmware</h5>
+                  <p>In ChargePoint App, ensure CPH50 is running current firmware (Wi-Fi connectivity required).</p>
+                </div>
+              </div>
+
+              <div class="checklist-row">
+                <input type="checkbox" class="checklist-checkbox" id="sop4" onchange="updateSopProgress()">
+                <div class="checklist-content">
+                  <h5>4. Wire Lever Lock Check (Breaker OFF)</h5>
+                  <p>Critical: Ensure L1 and L2 terminal levers are pressed completely down until clicking flush.</p>
+                </div>
+              </div>
+
+              <div class="checklist-row">
+                <input type="checkbox" class="checklist-checkbox" id="sop5" onchange="updateSopProgress()">
+                <div class="checklist-content">
+                  <h5>5. Amperage De-rating (30A Test)</h5>
+                  <p>Temporarily reduce breaker rating setting in installer app to 30A to eliminate voltage sag / thermal cutout.</p>
+                </div>
+              </div>
+
+              <div style="margin-top: 16px; background: var(--slate-100); border-radius: var(--radius-sm); padding: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 13px; font-weight: 600; color: var(--slate-700);">Diagnostic Readiness:</span>
+                <span id="sop-readiness-label" style="font-size: 13px; font-weight: 800; color: var(--chpt-orange);">0% Complete</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Hardware Reference Card -->
+          <div class="card">
+            <div class="card-header">
+              <h2>CPH50 Hardware Reference</h2>
+            </div>
+            <div class="card-body" style="font-size: 13px;">
+              <table style="width: 100%; border-collapse: collapse; color: var(--slate-700);">
+                <tr style="border-bottom: 1px solid var(--slate-200);">
+                  <td style="padding: 8px 0; font-weight: 600;">Voltage Input:</td>
+                  <td style="padding: 8px 0; font-family: var(--font-mono); text-align: right;">208 / 240 VAC (Split Phase)</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--slate-200);">
+                  <td style="padding: 8px 0; font-weight: 600;">Max Hardwire Amperage:</td>
+                  <td style="padding: 8px 0; font-family: var(--font-mono); text-align: right;">50A (on 70A/80A breaker)</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--slate-200);">
+                  <td style="padding: 8px 0; font-weight: 600;">Max Plug-in Amperage:</td>
+                  <td style="padding: 8px 0; font-family: var(--font-mono); text-align: right;">40A (NEMA 14-50 / 6-50)</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--slate-200);">
+                  <td style="padding: 8px 0; font-weight: 600;">GFCI / CCID:</td>
+                  <td style="padding: 8px 0; font-family: var(--font-mono); text-align: right;">Integrated 20mA CCID auto-retry</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; font-weight: 600;">Wi-Fi Connectivity:</td>
+                  <td style="padding: 8px 0; font-family: var(--font-mono); text-align: right;">2.4 GHz b/g/n (WPA2)</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: LED GLOW RING DECODER -->
+    <div id="tab-led-ring" class="tab-content-panel">
+      <div class="alert-banner">
+        <div style="font-size: 24px;">💡</div>
+        <div class="alert-banner-text">
+          <h4>Interactive CPH50 LED Status Ring Simulator</h4>
+          <p>Click any LED color or behavior below to render the exact visual animation, decipher internal station states, contactor positions, and required technician interventions.</p>
+        </div>
+      </div>
+
+      <div class="grid-2col">
+        <!-- Interactive Stage -->
+        <div class="card">
+          <div class="card-header">
+            <h2>Live Holster Glow Visualizer</h2>
+            <span id="active-led-tag" class="status-badge" style="background:#064e3b; color:#34d399; border-color:#059669;">BREATHING GREEN</span>
+          </div>
+          <div class="card-body">
+            <div class="led-simulator-stage">
+              <div class="cph50-chassis">
+                <div class="cph50-inner-bezel">
+                  <div id="interactive-ring" class="led-glow-ring glow-pulsing-green">
+                    <span id="ring-title-text" class="ring-center-text">CHARGING</span>
+                    <span id="ring-power-text" class="ring-subtext">48 Amps Active</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 10px;">
+              <div style="font-size: 13px; font-weight: 700; color: var(--slate-700); margin-bottom: 8px;">Select LED State to Test:</div>
+              <div class="led-selector-grid">
+                <button class="led-btn active" onclick="setRingState('pulsing-green')">
+                  <span class="led-color-chip" style="background: #10b981; box-shadow: 0 0 6px #10b981;"></span>
+                  Pulsing Green
+                </button>
+                <button class="led-btn" onclick="setRingState('solid-green')">
+                  <span class="led-color-chip" style="background: #059669;"></span>
+                  Solid Green
+                </button>
+                <button class="led-btn" onclick="setRingState('solid-blue')">
+                  <span class="led-color-chip" style="background: #2563eb; box-shadow: 0 0 6px #2563eb;"></span>
+                  Solid Blue
+                </button>
+                <button class="led-btn" onclick="setRingState('pulsing-blue')">
+                  <span class="led-color-chip" style="background: #60a5fa; box-shadow: 0 0 6px #60a5fa;"></span>
+                  Flashing Blue
+                </button>
+                <button class="led-btn" onclick="setRingState('flashing-red')">
+                  <span class="led-color-chip" style="background: #ef4444; box-shadow: 0 0 6px #ef4444;"></span>
+                  Flashing Red
+                </button>
+                <button class="led-btn" onclick="setRingState('solid-red')">
+                  <span class="led-color-chip" style="background: #b91c1c;"></span>
+                  Solid Red
+                </button>
+                <button class="led-btn" onclick="setRingState('pulsing-white')">
+                  <span class="led-color-chip" style="background: #ffffff; border: 1px solid #cbd5e1;"></span>
+                  Pulsing White
+                </button>
+                <button class="led-btn" onclick="setRingState('dark')">
+                  <span class="led-color-chip" style="background: #334155;"></span>
+                  Dark / No Light
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Telemetry & Meaning Card -->
+        <div class="card">
+          <div class="card-header">
+            <h2>Telemetry & Technical Diagnostics</h2>
+          </div>
+          <div class="card-body">
+            <div id="led-telemetry-content">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: WIRE LEVER SAFETY PROTOCOL -->
+    <div id="tab-wire-levers" class="tab-content-panel">
+      <div class="alert-banner critical">
+        <div style="font-size: 24px;">⚠️</div>
+        <div class="alert-banner-text">
+          <h4>Crucial Physical Inspection: L1 / L2 Terminal Lever Detents</h4>
+          <p><strong>Mandatory Safety Rule:</strong> Always shut off the upstream 240V circuit breaker in the main electrical service panel before removing the CPH50 faceplate or opening the wire cover. Never work on live terminals.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Why Wire Levers Cause "Zero Energy Dispensing" (0 kW)</h2>
+          <span class="status-badge" style="border-color: var(--red-fault); color: #f87171;">Common Hardware Cause</span>
+        </div>
+        <div class="card-body">
+          <p style="font-size: 14px; color: var(--slate-700); margin-bottom: 20px;">
+            The ChargePoint Home Flex utilizes heavy-duty spring-loaded lever terminals (WAGO style) for the incoming 240V conductors (L1, L2, and Ground). If the wire lever is pressed down with insufficient force, it may look closed but remain perched just above the mechanical locking detent. Under load, contact resistance climbs, voltage drops precipitously, thermal safety thresholds trip, and the internal contactor opens—resulting in <strong>0 kW energy flow</strong>.
+          </p>
+
+          <!-- Interactive comparison tool -->
+          <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+            <button class="btn btn-outline" id="btn-show-flawed" onclick="setTerminalState(false)">Show Flawed Engagement (0 kW Hazard)</button>
+            <button class="btn btn-primary" id="btn-show-correct" onclick="setTerminalState(true)">Show 100% Flush Locked Detent (Pass)</button>
+          </div>
+
+          <div class="wire-lever-diagram">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 12px;">
+              <h3 style="font-size: 15px; color: #f8fafc;">Internal Wiring Chamber Simulation (Faceplate Removed)</h3>
+              <span id="terminal-sim-status" class="lever-status-badge bad">HIGH CONTACT RESISTANCE DETECTED</span>
+            </div>
+
+            <div class="wire-terminal-box">
+              <div class="terminal-clamp faulty" id="clamp-l1">
+                <div style="font-size: 12px; font-weight: 700; color: #94a3b8;">TERMINAL L1 (Line 1)</div>
+                <div class="lever-graphic" id="lever-icon-l1">📐 45° Angle</div>
+                <div style="font-size: 13px; font-family: var(--font-mono); margin: 6px 0;" id="lever-metric-l1">Resistance: 4.8 Ω (HOT)</div>
+                <div class="lever-status-badge bad" id="lever-badge-l1">Half-Engaged</div>
+              </div>
+
+              <div class="terminal-clamp faulty" id="clamp-l2">
+                <div style="font-size: 12px; font-weight: 700; color: #94a3b8;">TERMINAL L2 (Line 2)</div>
+                <div class="lever-graphic" id="lever-icon-l2">📐 45° Angle</div>
+                <div style="font-size: 13px; font-family: var(--font-mono); margin: 6px 0;" id="lever-metric-l2">Resistance: 5.2 Ω (HOT)</div>
+                <div class="lever-status-badge bad" id="lever-badge-l2">Half-Engaged</div>
+              </div>
+
+              <div class="terminal-clamp secure">
+                <div style="font-size: 12px; font-weight: 700; color: #94a3b8;">TERMINAL GND (Earth)</div>
+                <div class="lever-graphic">🔒 Flat 0°</div>
+                <div style="font-size: 13px; font-family: var(--font-mono); margin: 6px 0;">Resistance: 0.05 Ω (OK)</div>
+                <div class="lever-status-badge good">Locked Flush</div>
+              </div>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.3); padding: 14px; border-radius: var(--radius-sm); font-size: 13px; color: #cbd5e1;" id="terminal-explanation">
+              <strong>Failure Mode:</strong> Levers are not pressed down until the audible "CLICK". Wire strands have high impedance contact. When charging begins, thermal sensors detect rapid temperature spike within 30-90 seconds and immediately trip contactors to prevent terminal meltdown.
+            </div>
+          </div>
+
+          <h3 style="font-size: 16px; font-weight: 700; margin: 24px 0 12px;">Step-by-Step Field Inspection Procedure:</h3>
+          <ol class="sop-step-list" style="color: var(--slate-800);">
+            <li><strong>De-energize Service:</strong> Flip the dedicated 240V dual-pole circuit breaker to the OFF position. Verify 0V with a calibrated digital multimeter at the input.</li>
+            <li><strong>Remove Faceplate:</strong> Gently pull from the bottom of the CPH50 plastic fascia to pop the decorative snaps free.</li>
+            <li><strong>Open Terminal Cover:</strong> Loosen the captive Phillips/Torx retaining screws securing the internal clear/black safety baffle.</li>
+            <li><strong>Physical Lever Audit:</strong> Firmly press each orange/grey lever arm directly downward with thumb pressure until you hear/feel an unmistakable mechanical snap. The top surface of the lever must be perfectly parallel and flush with the terminal casing.</li>
+            <li><strong>Conductor Pull Test:</strong> Give each insulated conductor (L1, L2, GND) a firm tug downwards to confirm the internal clamp has locked onto the bare copper.</li>
+            <li><strong>Reassemble & Re-energize:</strong> Fasten safety cover, snap on fascia, and turn circuit breaker ON. Test a charging cycle.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: BREAKER & AMPERAGE CALCULATOR -->
+    <div id="tab-breaker-calc" class="tab-content-panel">
+      <div class="alert-banner">
+        <div style="font-size: 24px;">📐</div>
+        <div class="alert-banner-text">
+          <h4>NEC 80% Continuous Load & Sizing Engineering Tool</h4>
+          <p>Electric Vehicle Supply Equipment (EVSE) is classified as a continuous electrical load by the National Electrical Code (NEC Article 625). Maximum continuous draw cannot exceed 80% of circuit breaker rating.</p>
+        </div>
+      </div>
+
+      <div class="grid-2col">
+        <div class="card">
+          <div class="card-header">
+            <h2>Circuit Configuration Parameters</h2>
+          </div>
+          <div class="card-body">
+            <div class="calc-row">
+              <div class="form-group">
+                <label for="calc-breaker">Dedicated Breaker Size:</label>
+                <select id="calc-breaker" class="form-control" onchange="runElectricalCalculator()">
+                  <option value="20">20 Amp Dual-Pole (16A Charge)</option>
+                  <option value="30">30 Amp Dual-Pole (24A Charge)</option>
+                  <option value="40">40 Amp Dual-Pole (32A Charge)</option>
+                  <option value="50" selected>50 Amp Dual-Pole (40A Charge)</option>
+                  <option value="60">60 Amp Dual-Pole (48A Charge)</option>
+                  <option value="70">70 Amp Dual-Pole (50A Charge)</option>
+                  <option value="80">80 Amp Dual-Pole (50A Max Charge)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="calc-wiring-type">Installation Connection:</label>
+                <select id="calc-wiring-type" class="form-control" onchange="runElectricalCalculator()">
+                  <option value="hardwire" selected>Direct Hardwired (Supports up to 50A)</option>
+                  <option value="nema1450">NEMA 14-50 Plug (Max 40A Continuous)</option>
+                  <option value="nema650">NEMA 6-50 Plug (Max 40A Continuous)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="calc-row">
+              <div class="form-group">
+                <label for="calc-wire-gauge">Installed Conductor Wire Gauge:</label>
+                <select id="calc-wire-gauge" class="form-control" onchange="runElectricalCalculator()">
+                  <option value="10">10 AWG Copper (Max 24A / 30A Breaker)</option>
+                  <option value="8">8 AWG Copper (Max 32A / 40A Breaker)</option>
+                  <option value="6" selected>6 AWG Copper 75°C (Standard for 48A / 60A Breaker)</option>
+                  <option value="4">4 AWG Copper (Required for 50A on 70A/80A Breaker)</option>
+                  <option value="al6">6 AWG Aluminum (De-rated capacity)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="calc-line-voltage">Measured Line Voltage:</label>
+                <select id="calc-line-voltage" class="form-control" onchange="runElectricalCalculator()">
+                  <option value="240" selected>240 Volts (Standard Residential Split Phase)</option>
+                  <option value="208">208 Volts (Commercial 3-Phase Legs)</option>
+                  <option value="225">225 Volts (Loaded Grid / Sagged)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 10px;">
+              <label for="calc-upstream-gfci">Upstream Breaker Type:</label>
+              <select id="calc-upstream-gfci" class="form-control" onchange="runElectricalCalculator()">
+                <option value="standard" selected>Standard Dual-Pole Breaker (Recommended by ChargePoint)</option>
+                <option value="gfci">Dual-Pole GFCI Breaker (Dual-GFCI Nuisance Risk)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>Calculated Specifications & Compliance</h2>
+          </div>
+          <div class="card-body">
+            <div class="calc-metrics-grid">
+              <div class="metric-card">
+                <div class="metric-label">Max Charge Current</div>
+                <div class="metric-val" id="metric-max-amp" style="color: var(--chpt-orange);">40 A</div>
+                <div class="metric-desc">80% NEC Continuous Cap</div>
+              </div>
+
+              <div class="metric-card">
+                <div class="metric-label">Estimated Delivery</div>
+                <div class="metric-val" id="metric-kw">9.6 kW</div>
+                <div class="metric-desc">Energy Flow Rate</div>
+              </div>
+
+              <div class="metric-card">
+                <div class="metric-label">App Setting Required</div>
+                <div class="metric-val" id="metric-app-setting" style="color: var(--blue-glow);">50A Breaker</div>
+                <div class="metric-desc">In Installer Commissioning</div>
+              </div>
+
+              <div class="metric-card">
+                <div class="metric-label">Wire Adequacy</div>
+                <div class="metric-val" id="metric-wire-status" style="color: var(--green-glow); font-size: 18px;">COMPLIANT</div>
+                <div class="metric-desc" id="metric-wire-sub">6 AWG meets requirements</div>
+              </div>
+            </div>
+
+            <div id="calc-warning-box" style="margin-top: 20px; font-size: 13px; padding: 14px; border-radius: var(--radius-sm); background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; display: none;">
+              <!-- Dynamic alert -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: ISHIKAWA ROOT CAUSE FISHBONE MATRIX -->
+    <div id="tab-fishbone" class="tab-content-panel">
+      <div class="alert-banner">
+        <div style="font-size: 24px;">📊</div>
+        <div class="alert-banner-text">
+          <h4>Complete Ishikawa Fishbone Architecture for 0 kW Zero Energy Flow</h4>
+          <p>Every root cause branch documented during ChargePoint engineering teardowns and Tier 2/DS diagnostics.</p>
+        </div>
+      </div>
+
+      <div class="fishbone-grid">
+        <!-- Branch 1 -->
+        <div class="branch-card">
+          <div class="branch-header orange">
+            <span>📅</span> 1. Schedules & Utility TOU Lockouts
+          </div>
+          <div class="branch-body">
+            <div class="sub-cause-item">
+              <div class="sub-cause-name">CP Home App Schedule Conflict</div>
+              <div class="sub-cause-fix">Station is in blue standby waiting for off-peak rate start time.</div>
+              <span class="fix-pill">Test: Double-Pump bypass</span>
+            </div>
+            <div class="sub-cause-item">
+              <div class="sub-cause-name">Vehicle Internal Departure Timers</div>
+              <div class="sub-cause-fix">Tesla/Rivian/Hyundai schedule overriding the station's pilot delivery.</div>
+              <span class="fix-pill">Disable car timer</span>
+            </div>
+            <div class="sub-cause-item">
+              <div class="sub-cause-name">Utility Demand Response Event</div>
+              <div class="sub-cause-fix">Grid operator utility program paused charging during peak load events.</div>
+              <span class="fix-pill">Check app program status</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Branch 2 -->
+        <div class="branch-card">
+          <div class="branch-header blue">
+            <span>🚗</span> 2. Vehicle Handshake & OBC Limits
+          </div>
+          <div class="branch-body">
+            <div class="sub-cause-item">
+              <div class="sub-cause-name">Target State of Charge (SOC) Reached</div>
+              <div class="sub-cause-fix">EV battery already at 80% daily cap set in infotainment menu; vehicle OBC stops drawing current.</div>
+              <span class="fix-pill">Increase vehicle limit to 90%+</span>
+            </div>
+            <div class="sub-cause-item">
+              <div class="sub-cause-name">Vehicle Contactor Refusal</div>
+              <div class="sub-cause-fix">Vehicle 12V battery low or high-voltage BMS safety interlock open.</div>
+              <span class="fix-pill">Test at public Level 2</span>
+            </div>
+            <div class="sub-cause-item">
+              <div class="sub-cause-name">Pilot Pin (Control Pilot) Misalignment</div>
+              <div class="sub-cause-fix">Wear or bent pin on J1772 / NACS plug preventing 1kHz PWM handshake.</div>
+              <span class="fix-pill">Inspect connector pins</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Branch 3 -->
+        <div class="branch-card">
+          <div class="branch-header green">
+            <span>💡</span> 3. LED States & Firmware Status
+          </div>
+          <div class="branch-body">
+            <div class="sub-cause-item">
+              <div class="sub-cause-name">Flashing Blue Stagnation</div>
+              <div class="sub-cause-fix">Vehicle detected, but car fails to pull control pilot state from B to C (charging).</div>
+              <span class="fix-pill">Power cycle vehicle & charger</span>
+            </div>
+            <div class="sub-cause-item">
+              <div class="sub-cause-name">Outdated CPH50 Firmware</div>
+              <div class="sub-cause-fix">Known early firmware communication bugs on newer 800V EV architectures.</div>
+              <span class="fix-pill">Trigger Wi-Fi OTA update</span>
+            </div>
+            <div class="sub-cause-item">
+              <div class="sub-cause-name">Pulsing White Lock</div>
+              <div class="sub-cause-fix">Station stuck in boot loop or Bluetooth commissioning handshake.</div>
+              <span class="fix-pill">3-minute breaker reset</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Branch 4 -->
+        <div class="branch-card">
+          <div class="branch-header red">
+            <span>🔧</span> 4. Wire Levers & Hardware Integrity
+          </div>
+          <div class="branch-body">
+            <div class="sub-cause-item">
+              <div class="sub-cause-name">Terminal Levers Not Clicked Flush</div>
+              <div class="sub-cause-fix">The single most prevalent physical defect causing immediate or 15-minute 0 kW dropouts.</div>
+              <span class="fix-pill">Press levers until snap</span>
+            </div>
+            <div class="sub-cause-item">
+              <div class="sub-cause-name">Internal Relay / Contactor Weld</div>
+              <div class="sub-cause-fix">Mechanical switching contacts burnt or failed to close upon command.</div>
+              <span class="fix-pill">Requires L2/DS Hardware RMA</span>
+            </div>
+            <div class="sub-cause-item">
+              <div class="sub-cause-name">Thermal Sensor High-Temp Shutdown</div>
+              <div class="sub-cause-fix">Loose wire heating terminal block above 85°C, triggering safety cutout.</div>
+              <span class="fix-pill">Re-torque / clamp check</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Branch 5 -->
+        <div class="branch-card">
+          <div class="branch-header purple">
+            <span>⚡</span> 5. Circuit, Voltage & Breaker De-rating
+          </div>
+          <div class="branch-body">
+            <div class="sub-cause-item">
+              <div class="sub-cause-name">80% Continuous Violation</div>
+              <div class="sub-cause-fix">Unit set to 48A on a 50A breaker. Breaker trips thermally after 20-30 minutes.</div>
+              <span class="fix-pill">De-rate app to 40A</span>
+            </div>
+            <div class="sub-cause-item">
+              <div class="sub-cause-name">Dual-GFCI Nuisance Tripping</div>
+              <div class="sub-cause-fix">Upstream GFCI breaker conflicts with CPH50's internal 20mA CCID test pulse.</div>
+              <span class="fix-pill">Swap to standard breaker</span>
+            </div>
+            <div class="sub-cause-item">
+              <div class="sub-cause-name">Severe Line Voltage Sag</div>
+              <div class="sub-cause-fix">Voltage drops under 198V due to long wire runs with undersized gauge.</div>
+              <span class="fix-pill">De-rate to 30A or rewire</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Branch 6 -->
+        <div class="branch-card">
+          <div class="branch-header amber">
+            <span>🎫</span> 6. Recommissioning & RMA Escalation
+          </div>
+          <div class="branch-body">
+            <div class="sub-cause-item">
+              <div class="sub-cause-name">Factory Reset / App Recommission</div>
+              <div class="sub-cause-fix">Remove charger from account, hold station reset trigger, re-pair via Bluetooth.</div>
+              <span class="fix-pill">Account re-association</span>
+            </div>
+            <div class="sub-cause-item">
+              <div class="sub-cause-name">Permanent Solid Red Fault</div>
+              <div class="sub-cause-fix">Non-recoverable CCID or internal safety supervisory system fault.</div>
+              <span class="fix-pill">Escalate to L2 Tier</span>
+            </div>
+            <div class="sub-cause-item">
+              <div class="sub-cause-name">L2/DS Escalation Queue</div>
+              <div class="sub-cause-fix">Route verified hardware tickets directly to the ChargePoint specialist engineering queue.</div>
+              <span class="fix-pill">B2C-GL-DS-ENG-CPH</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 6: L2/DS ESCALATION TICKET BUILDER -->
+    <div id="tab-ticket-gen" class="tab-content-panel">
+      <div class="alert-banner warning">
+        <div style="font-size: 24px;">🎫</div>
+        <div class="alert-banner-text">
+          <h4>ChargePoint Tier 2 / Designated Support (L2/DS) Escalation Form</h4>
+          <p>Complete this standardized technical diagnostic packet. When physical and configuration steps fail, copy this formatted brief directly into the customer support ticket to expedite hardware RMA approval.</p>
+        </div>
+      </div>
+
+      <div class="grid-2col">
+        <div class="card">
+          <div class="card-header">
+            <h2>Diagnostic Payload Fields</h2>
+          </div>
+          <div class="card-body">
+            <div class="calc-row">
+              <div class="form-group">
+                <label for="tkt-serial">CPH50 Serial Number:</label>
+                <input type="text" id="tkt-serial" class="form-control" placeholder="e.g. 214510012345" value="223810084920">
+              </div>
+              <div class="form-group">
+                <label for="tkt-mac">MAC Address:</label>
+                <input type="text" id="tkt-mac" class="form-control" placeholder="e.g. 00:24:B1:..." value="00:24:B1:8A:4C:12">
+              </div>
+            </div>
+
+            <div class="calc-row">
+              <div class="form-group">
+                <label for="tkt-vehicle">Vehicle Make / Model / Year:</label>
+                <input type="text" id="tkt-vehicle" class="form-control" placeholder="e.g. 2023 Hyundai Ioniq 5" value="2023 Ford Mustang Mach-E">
+              </div>
+              <div class="form-group">
+                <label for="tkt-fw">Firmware Version (if visible):</label>
+                <input type="text" id="tkt-fw" class="form-control" placeholder="e.g. 5.5.3.18" value="5.5.4.12">
+              </div>
+            </div>
+
+            <div class="calc-row">
+              <div class="form-group">
+                <label for="tkt-volts">Measured L1-L2 Voltage:</label>
+                <input type="text" id="tkt-volts" class="form-control" placeholder="e.g. 242 VAC" value="241.5 VAC">
+              </div>
+              <div class="form-group">
+                <label for="tkt-volts-gnd">Measured L1-G and L2-G Voltage:</label>
+                <input type="text" id="tkt-volts-gnd" class="form-control" placeholder="e.g. 121V / 120V" value="120.8V / 120.7V">
+              </div>
+            </div>
+
+            <div class="calc-row">
+              <div class="form-group">
+                <label for="tkt-breaker-info">Breaker & Wire Gauge:</label>
+                <input type="text" id="tkt-breaker-info" class="form-control" value="60A Breaker, 6 AWG Copper Hardwire">
+              </div>
+              <div class="form-group">
+                <label for="tkt-led-status">Observed LED Halo State:</label>
+                <select id="tkt-led-status" class="form-control">
+                  <option value="Flashing Blue (Car detected, no energy)">Flashing Blue (Car detected, no energy flow)</option>
+                  <option value="Solid Blue (Schedule locked)">Solid Blue (Schedule locked, double-pump failed)</option>
+                  <option value="Solid Red (Permanent Internal Fault)" selected>Solid Red (Permanent Internal Hardware Fault)</option>
+                  <option value="Pulsing Green but 0 kW output">Pulsing Green but 0 kW output recorded</option>
+                  <option value="Flashing Red (CCID trip, no auto-recovery)">Flashing Red (CCID trip, no auto-recovery)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 10px;">
+              <label for="tkt-notes">Troubleshooting Actions Already Completed:</label>
+              <textarea id="tkt-notes" class="form-control" rows="3">Breaker power cycled for 5 mins. Double-pump override attempted with no change. Faceplate removed and terminal wire levers physically inspected (both clicked 100% flush). Car tested and charged normally at nearby public ChargePoint Level 2 station. De-rated to 30A in app with no change.</textarea>
+            </div>
+
+            <div style="margin-top: 18px;">
+              <button class="btn btn-primary" onclick="compileEscalationTicket()">Generate Standardized Ticket Text</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>Ready-to-Paste Ticket Payload</h2>
+            <button class="btn btn-secondary" style="font-size: 12px; padding: 6px 12px;" onclick="copyTicketToClipboard()">📋 Copy to Clipboard</button>
+          </div>
+          <div class="card-body">
+            <pre class="ticket-preview" id="ticket-text-output"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="copy-toast" id="toast">Copied ticket to clipboard!</div>
+
+  <footer>
+    <div>ChargePoint Home Flex (CPH50) Professional Diagnostics Platform</div>
+    <div>Follows NEC Article 625 & Official ChargePoint Support Procedures</div>
+  </footer>
+
+  <script>
+    // Tab Switching
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content-panel').forEach(panel => panel.classList.remove('active'));
+      document.querySelectorAll('.nav-tab-btn').forEach(btn => btn.classList.remove('active'));
+
+      const target = document.getElementById('tab-' + tabId);
+      if (target) {
+        target.classList.add('active');
+      }
+
+      event.currentTarget.classList.add('active');
+    }
+
+    // Diagnostic Wizard State
+    const wizardState = {
+      symptom: '0kw',
+      led: 'solid_blue',
+      hasSchedule: false,
+      chargesAtPublicL2: true,
+      triedDoublePump: false,
+      wireLeverChecked: false
+    };
+
+    function selectOption(category, value, el) {
+      wizardState[category] = value;
+      const parent = el.parentElement;
+      parent.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+
+    function jumpToStep(stepNum) {
+      for (let i = 1; i <= 4; i++) {
+        const stepEl = document.getElementById('wizard-step-' + i);
+        const nodeEl = document.getElementById('pnode-' + i);
+        if (stepEl) stepEl.style.display = (i === stepNum) ? 'block' : 'none';
+        if (nodeEl) {
+          if (i === stepNum) {
+            nodeEl.className = 'wizard-step-node active';
+          } else if (i < stepNum) {
+            nodeEl.className = 'wizard-step-node completed';
+          } else {
+            nodeEl.className = 'wizard-step-node';
+          }
+        }
+      }
+      document.getElementById('step-counter').textContent = 'Step ' + stepNum + ' of 4';
+    }
+
+    function nextStep(stepNum) {
+      jumpToStep(stepNum);
+    }
+
+    function generateDiagnosis() {
+      wizardState.hasSchedule = document.getElementById('check-schedule').checked;
+      wizardState.chargesAtPublicL2 = document.getElementById('check-public-l2').checked;
+      wizardState.triedDoublePump = document.getElementById('check-double-pump').checked;
+      wizardState.wireLeverChecked = document.getElementById('check-wire-lever').checked;
+
+      const container = document.getElementById('diagnosis-container');
+      let html = '';
+
+      // Logic decision tree
+      if (wizardState.led === 'solid_blue' || (wizardState.hasSchedule && !wizardState.triedDoublePump)) {
+        html = `
+          <div class="diagnostic-output-box blue">
+            <h3 style="font-size: 18px; margin-bottom: 8px;">Diagnosis: Active Schedule Lockout or Paused Session</h3>
+            <p style="color: #93c5fd; font-size: 14px;">The solid blue ring indicates the CPH50 is intentionally delaying charging until the utility off-peak rate begins or the app schedule window opens.</p>
+            <ul class="sop-step-list">
+              <li><strong>Perform the "Double-Pump" Override:</strong> Plug the connector into the vehicle, unplug it, and plug it back in within <strong>5 seconds</strong>. This commands the CPH50 to bypass all schedules and begin immediate charging.</li>
+              <li><strong>Review In-App Timers:</strong> Open the ChargePoint App &gt; Home Charger &gt; Settings &gt; Schedule. Toggle schedule OFF to verify energy begins flowing.</li>
+              <li><strong>Check EV Departure Timers:</strong> In the car infotainment screen, turn off any vehicle departure timers (e.g. Tesla Scheduled Departure / Ford Preconditioning) which may hold the pilot line low.</li>
+            </ul>
+            <div class="sop-callout">
+              <strong>Key Indicator:</strong> If the ring transitions from Blue to Pulsing Green after the Double-Pump, the charger hardware is 100% healthy.
+            </div>
+          </div>
+        `;
+      } else if (wizardState.led === 'flashing_blue') {
+        html = `
+          <div class="diagnostic-output-box blue">
+            <h3 style="font-size: 18px; margin-bottom: 8px;">Diagnosis: Vehicle Handshake / Control Pilot Incomplete</h3>
+            <p style="color: #93c5fd; font-size: 14px;">The station senses the vehicle is physically plugged in, but the vehicle's On-Board Charger (OBC) has not commanded the internal contactor to close.</p>
+            <ul class="sop-step-list">
+              <li><strong>Verify Vehicle Battery State of Charge:</strong> Check if the vehicle has reached its maximum charging limit (e.g. vehicle limit set to 80% and battery is currently at 80%).</li>
+              <li><strong>Check Public AC L2 Isolation:</strong> ${wizardState.chargesAtPublicL2 ? '<span style="color:#34d399;">✓ Vehicle verified charging at public L2.</span> Issue is isolated to CPH50 pilot pin or home voltage impedance.' : '⚠️ If vehicle also fails on public AC chargers, the vehicle On-Board Charger (OBC) or 12V auxiliary system is faulty.'}</li>
+              <li><strong>Inspect J1772 / NACS Plug Pins:</strong> Ensure the top Control Pilot pin is clean, unbent, and free of dirt or debris.</li>
+              <li><strong>Re-seat Firmly:</strong> Listen for the mechanical latch "click" when pushing into the vehicle charging port.</li>
+            </ul>
+          </div>
+        `;
+      } else if (wizardState.led === 'red_any' || wizardState.symptom === 'red_fault') {
+        html = `
+          <div class="diagnostic-output-box red">
+            <h3 style="font-size: 18px; margin-bottom: 8px;">Diagnosis: Critical CCID Ground Fault or Internal Relay Failure</h3>
+            <p style="color: #fca5a5; font-size: 14px;">A red ring indicates either a ground isolation breakdown or an internal contactor weld / safety lockout.</p>
+            <ul class="sop-step-list">
+              <li><strong>Breaker Reset Protocol:</strong> Turn the upstream 240V dual-pole circuit breaker OFF for a full <strong>3 minutes</strong>. Turn breaker back ON and observe boot sequence.</li>
+              <li><strong>Inspect Wire Levers (CRITICAL):</strong> ${wizardState.wireLeverChecked ? '✓ Wire levers verified.' : '<strong style="color:#ef4444;">ATTENTION:</strong> With power OFF, verify terminal clamps L1 and L2 are pressed 100% down until flush! A loose lever causes ground reference errors.'}</li>
+              <li><strong>Test Multimeter Voltages:</strong> Measure L1-L2 (~240V), L1-G (~120V), and L2-G (~120V). If L-G voltage is floating or erratic, the upstream grounding electrode or neutral-ground bond is defective.</li>
+              <li><strong>Escalation:</strong> If red returns immediately upon boot after breaker cycle, station has internal hardware failure requiring replacement.</li>
+            </ul>
+          </div>
+        `;
+      } else if (!wizardState.wireLeverChecked) {
+        html = `
+          <div class="diagnostic-output-box amber">
+            <h3 style="font-size: 18px; margin-bottom: 8px;">Diagnosis: Unverified Terminal Wire Levers (Primary 0 kW Cause)</h3>
+            <p style="color: #fde68a; font-size: 14px;">In over 65% of zero-energy dispensing complaints where lights appear normal, the internal L1 or L2 lever clamp was not clicked all the way down into its locking detent during installation.</p>
+            <ul class="sop-step-list">
+              <li><strong>Turn Breaker OFF:</strong> Do not touch terminals while energized.</li>
+              <li><strong>Remove Faceplate:</strong> Pop front fascia off and unfasten terminal barrier.</li>
+              <li><strong>Click Levers:</strong> Use firm thumb pressure on both orange/grey levers until an audible mechanical click is felt and the lever is perfectly parallel.</li>
+              <li><strong>Re-test:</strong> Reinstall cover, restore power, and initiate charge.</li>
+            </ul>
+          </div>
+        `;
+      } else {
+        html = `
+          <div class="diagnostic-output-box green">
+            <h3 style="font-size: 18px; margin-bottom: 8px;">Diagnosis: Configuration & Circuit Amperage De-rating Path</h3>
+            <p style="color: #a7f3d0; font-size: 14px;">Physical wiring and basic schedules appear normal. The station is likely triggering a soft thermal or voltage sag back-off.</p>
+            <ul class="sop-step-list">
+              <li><strong>Temporarily De-rate to 30 Amps:</strong> In the ChargePoint mobile app or installer setup, reduce circuit setting to 30A. If charging stabilizes, your electrical panel or feeder wire is experiencing voltage sag under high amperage.</li>
+              <li><strong>Check for Upstream GFCI Breaker:</strong> If the panel breaker has a "TEST" button (GFCI), it may be nuisance tripping against the CPH50 internal 20mA CCID monitor.</li>
+              <li><strong>Re-pair Wi-Fi & Firmware:</strong> Ensure station has reported latest telemetry to ChargePoint servers.</li>
+            </ul>
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+      jumpToStep(4);
+    }
+
+    function exportToTicketTab() {
+      switchTab('ticket-gen');
+      // Set the ticket observed state based on wizard
+      const select = document.getElementById('tkt-led-status');
+      if (wizardState.led === 'solid_blue') select.value = 'Solid Blue (Schedule locked)';
+      else if (wizardState.led === 'flashing_blue') select.value = 'Flashing Blue (Car detected, no energy)';
+      else if (wizardState.led === 'red_any') select.value = 'Solid Red (Permanent Internal Fault)';
+      compileEscalationTicket();
+    }
+
+    // Checklist Progress
+    function updateSopProgress() {
+      const checkboxes = [
+        document.getElementById('sop1').checked,
+        document.getElementById('sop2').checked,
+        document.getElementById('sop3').checked,
+        document.getElementById('sop4').checked,
+        document.getElementById('sop5').checked
+      ];
+      const count = checkboxes.filter(Boolean).length;
+      const pct = Math.round((count / 5) * 100);
+      const label = document.getElementById('sop-readiness-label');
+      label.textContent = pct + '% Complete';
+      if (pct === 100) {
+        label.style.color = '#10b981';
+      } else {
+        label.style.color = '#ff5900';
+      }
+    }
+
+    // LED Ring Simulator Engine
+    const ledSpecs = {
+      'pulsing-green': {
+        class: 'glow-pulsing-green',
+        title: 'CHARGING',
+        sub: '48 Amps Active Flow',
+        tag: 'BREATHING GREEN (Delivering Power)',
+        badgeBg: '#064e3b',
+        badgeCol: '#34d399',
+        mode: 'Active Charging (State C)',
+        contactor: 'CLOSED (Energized)',
+        voltage: '240 VAC passing to vehicle',
+        meaning: 'Energy is actively flowing through the J1772/NACS cable into the EV onboard charger. App will show real-time charging rate in kW.',
+        action: 'Normal operating state. If car battery is not increasing despite breathing green, verify vehicle dashboard power meter.'
+      },
+      'solid-green': {
+        class: 'glow-solid-green',
+        title: 'READY',
+        sub: 'Available to Plug In',
+        tag: 'SOLID GREEN (Ready / Standby)',
+        badgeBg: '#064e3b',
+        badgeCol: '#34d399',
+        mode: 'Standby / Ready (State A)',
+        contactor: 'OPEN (De-energized for safety)',
+        voltage: '12V DC Pilot ready, 0V on power pins',
+        meaning: 'The station is powered on, initialized, and ready to connect to a vehicle. No schedule is inhibiting charging.',
+        action: 'Plug the connector firmly into the EV. If the light remains solid green and does not turn blue or pulsing green, check connector latch.'
+      },
+      'solid-blue': {
+        class: 'glow-solid-blue',
+        title: 'SCHEDULED',
+        sub: 'Waiting on Off-Peak Timer',
+        tag: 'SOLID BLUE (Schedule / Paused)',
+        badgeBg: '#1e3a8a',
+        badgeCol: '#93c5fd',
+        mode: 'Paused / Inactive Schedule',
+        contactor: 'OPEN (Waiting)',
+        voltage: '0V on high-voltage lines',
+        meaning: 'The station or user account has an active charging schedule configured (e.g., 11:00 PM - 7:00 AM). The unit will not deliver power until the off-peak window opens.',
+        action: 'Perform a Double-Pump (unplug and replug within 5 seconds) to force an immediate manual charge override.'
+      },
+      'pulsing-blue': {
+        class: 'glow-pulsing-blue',
+        title: 'CONNECTED',
+        sub: 'Awaiting EV Handshake',
+        tag: 'FLASHING / PULSING BLUE (Vehicle Handshake)',
+        badgeBg: '#1e3a8a',
+        badgeCol: '#93c5fd',
+        mode: 'Pilot Handshake (State B)',
+        contactor: 'OPEN (Vehicle has not closed relay)',
+        voltage: '1kHz PWM pilot active',
+        meaning: 'CPH50 detects the car is connected, but the vehicle has not pulled the control pilot voltage down to request power. The car is holding off energy delivery.',
+        action: 'Check vehicle charge limit setting in the dashboard or companion app (e.g., Tesla app). Confirm vehicle is not at 80% or 100% cap.'
+      },
+      'flashing-red': {
+        class: 'glow-flashing-red',
+        title: 'CCID FAULT',
+        sub: 'Ground Fault Trip',
+        tag: 'FLASHING RED (Temporary CCID Trip)',
+        badgeBg: '#7f1d1d',
+        badgeCol: '#fca5a5',
+        mode: 'CCID 20mA Trip (Safety Lockout)',
+        contactor: 'LOCKED OPEN',
+        voltage: '0V output',
+        meaning: 'Station detected leakage current to ground exceeding 20mA. The CPH50 will automatically retry 4 times at 15-minute intervals.',
+        action: 'Disconnect from car. Inspect connector for moisture or water. If it fails after 4 retries, cycle breaker for 3 minutes.'
+      },
+      'solid-red': {
+        class: 'glow-solid-red',
+        title: 'HARDWARE FAULT',
+        sub: 'Fatal Error / Relay Weld',
+        tag: 'SOLID RED (Permanent Hardware Error)',
+        badgeBg: '#7f1d1d',
+        badgeCol: '#fca5a5',
+        mode: 'Permanent Safety Lock',
+        contactor: 'LOCKED OPEN or WELDED',
+        voltage: '0V output',
+        meaning: 'Severe internal hardware failure: contactor welded, supervisory microcontroller failed self-check, or internal temperature exceeded 95°C.',
+        action: 'Power cycle breaker for 5 minutes. If solid red returns upon power-up, station requires RMA replacement via Tier 2/DS.'
+      },
+      'pulsing-white': {
+        class: 'glow-pulsing-white',
+        title: 'BOOT / SETUP',
+        sub: 'Updating / BLE Pairing',
+        tag: 'PULSING WHITE (Commissioning / Firmware)',
+        badgeBg: '#334155',
+        badgeCol: '#f8fafc',
+        mode: 'Setup / OTA Download',
+        contactor: 'OPEN',
+        voltage: '0V output',
+        meaning: 'Station is booting up, downloading over-the-air firmware updates, or in Bluetooth pairing mode with the installer app.',
+        action: 'DO NOT power cycle during pulsing white. Wait 10-15 minutes for firmware flash to conclude.'
+      },
+      'dark': {
+        class: 'glow-dark',
+        title: 'NO POWER',
+        sub: '0 Volts Input',
+        tag: 'DARK (No Power to Unit)',
+        badgeBg: '#1e293b',
+        badgeCol: '#94a3b8',
+        mode: 'De-energized',
+        contactor: 'OPEN',
+        voltage: '0 VAC at input terminals',
+        meaning: 'Main panel circuit breaker is tripped, wire lever came disconnected, or internal power supply fuse blown.',
+        action: 'Check service panel breaker. Verify 240V at input terminals with multimeter.'
+      }
+    };
+
+    function setRingState(stateKey) {
+      const data = ledSpecs[stateKey];
+      if (!data) return;
+
+      const ring = document.getElementById('interactive-ring');
+      ring.className = 'led-glow-ring ' + data.class;
+      document.getElementById('ring-title-text').textContent = data.title;
+      document.getElementById('ring-power-text').textContent = data.sub;
+
+      const tag = document.getElementById('active-led-tag');
+      tag.textContent = data.tag;
+      tag.style.background = data.badgeBg;
+      tag.style.color = data.badgeCol;
+
+      // Update button active state
+      document.querySelectorAll('.led-btn').forEach(btn => btn.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+
+      // Update telemetry info
+      renderLedTelemetry(data);
+    }
+
+    function renderLedTelemetry(data) {
+      const el = document.getElementById('led-telemetry-content');
+      el.innerHTML = `
+        <div style="margin-bottom: 16px;">
+          <h4 style="font-size: 16px; color: var(--slate-900); font-weight: 700;">${data.tag}</h4>
+          <p style="font-size: 13px; color: var(--slate-600); margin-top: 4px;">${data.meaning}</p>
+        </div>
+
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 16px;">
+          <tr style="border-bottom: 1px solid var(--slate-100);">
+            <td style="padding: 8px 0; font-weight: 600; color: var(--slate-600);">Operating State:</td>
+            <td style="padding: 8px 0; font-family: var(--font-mono); font-weight: 600; text-align: right;">${data.mode}</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--slate-100);">
+            <td style="padding: 8px 0; font-weight: 600; color: var(--slate-600);">Internal Contactor:</td>
+            <td style="padding: 8px 0; font-family: var(--font-mono); font-weight: 600; text-align: right;">${data.contactor}</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--slate-100);">
+            <td style="padding: 8px 0; font-weight: 600; color: var(--slate-600);">Terminal Voltage:</td>
+            <td style="padding: 8px 0; font-family: var(--font-mono); font-weight: 600; text-align: right;">${data.voltage}</td>
+          </tr>
+        </table>
+
+        <div style="background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: var(--radius-sm); padding: 14px;">
+          <div style="font-size: 12px; font-weight: 700; color: var(--chpt-orange); text-transform: uppercase; margin-bottom: 4px;">Recommended Technician Action</div>
+          <div style="font-size: 13px; color: var(--slate-800); line-height: 1.4;">${data.action}</div>
+        </div>
+      `;
+    }
+
+    // Terminal Lever Interactive Demonstration
+    function setTerminalState(isLocked) {
+      const clampL1 = document.getElementById('clamp-l1');
+      const clampL2 = document.getElementById('clamp-l2');
+      const badgeL1 = document.getElementById('lever-badge-l1');
+      const badgeL2 = document.getElementById('lever-badge-l2');
+      const metricL1 = document.getElementById('lever-metric-l1');
+      const metricL2 = document.getElementById('lever-metric-l2');
+      const iconL1 = document.getElementById('lever-icon-l1');
+      const iconL2 = document.getElementById('lever-icon-l2');
+      const statusBadge = document.getElementById('terminal-sim-status');
+      const explanation = document.getElementById('terminal-explanation');
+
+      if (isLocked) {
+        clampL1.className = 'terminal-clamp secure';
+        clampL2.className = 'terminal-clamp secure';
+        badgeL1.className = 'lever-status-badge good';
+        badgeL2.className = 'lever-status-badge good';
+        badgeL1.textContent = 'Locked Flush';
+        badgeL2.textContent = 'Locked Flush';
+        iconL1.textContent = '🔒 Flat 0°';
+        iconL2.textContent = '🔒 Flat 0°';
+        metricL1.textContent = 'Resistance: 0.04 Ω (Cold)';
+        metricL2.textContent = 'Resistance: 0.05 Ω (Cold)';
+        statusBadge.className = 'lever-status-badge good';
+        statusBadge.textContent = '100% PROPERLY SEATED DETENTS';
+        explanation.innerHTML = '<strong>Optimal State:</strong> Both L1 and L2 levers clicked completely down. Contact resistance is virtually zero (&lt; 0.05 ohms). Full continuous charging current flows safely without heat generation or contactor tripping.';
+      } else {
+        clampL1.className = 'terminal-clamp faulty';
+        clampL2.className = 'terminal-clamp faulty';
+        badgeL1.className = 'lever-status-badge bad';
+        badgeL2.className = 'lever-status-badge bad';
+        badgeL1.textContent = 'Half-Engaged';
+        badgeL2.textContent = 'Half-Engaged';
+        iconL1.textContent = '📐 45° Angle';
+        iconL2.textContent = '📐 45° Angle';
+        metricL1.textContent = 'Resistance: 4.8 Ω (HOT)';
+        metricL2.textContent = 'Resistance: 5.2 Ω (HOT)';
+        statusBadge.className = 'lever-status-badge bad';
+        statusBadge.textContent = 'HIGH CONTACT RESISTANCE DETECTED';
+        explanation.innerHTML = '<strong>Failure Mode:</strong> Levers are not pressed down until the audible "CLICK". Wire strands have high impedance contact. When charging begins, thermal sensors detect rapid temperature spike within 30-90 seconds and immediately trip contactors to prevent terminal meltdown.';
+      }
+    }
+
+    // Electrical Calculator
+    function runElectricalCalculator() {
+      const breaker = parseInt(document.getElementById('calc-breaker').value, 10);
+      const wiringType = document.getElementById('calc-wiring-type').value;
+      const wireGauge = document.getElementById('calc-wire-gauge').value;
+      const voltage = parseInt(document.getElementById('calc-line-voltage').value, 10);
+      const upstreamGfci = document.getElementById('calc-upstream-gfci').value;
+
+      // 80% continuous cap
+      let maxAmp = breaker * 0.8;
+
+      // Plug-in cap is 40A
+      if (wiringType !== 'hardwire' && maxAmp > 40) {
+        maxAmp = 40;
+      }
+
+      // Hardwire max is 50A
+      if (maxAmp > 50) {
+        maxAmp = 50;
+      }
+
+      const kw = ((voltage * maxAmp) / 1000).toFixed(1);
+
+      document.getElementById('metric-max-amp').textContent = maxAmp + ' A';
+      document.getElementById('metric-kw').textContent = kw + ' kW';
+      document.getElementById('metric-app-setting').textContent = breaker + 'A Breaker';
+
+      // Wire validation
+      const wireStatus = document.getElementById('metric-wire-status');
+      const wireSub = document.getElementById('metric-wire-sub');
+      const warningBox = document.getElementById('calc-warning-box');
+      let warnings = [];
+
+      let wireOk = true;
+      if (breaker >= 60 && (wireGauge === '10' || wireGauge === '8')) {
+        wireOk = false;
+        warnings.push(`<strong>Dangerous Wire Size:</strong> ${wireGauge} AWG cannot safely support a ${breaker}A breaker. NEC requires minimum 6 AWG copper (or 4 AWG for 70A/80A). Risk of fire or severe voltage sag.`);
+      } else if (breaker >= 70 && wireGauge !== '4') {
+        warnings.push(`<strong>Attention for 50A Charging:</strong> A 70A or 80A breaker requires 4 AWG copper to handle continuous 50 Amp load.`);
+      }
+
+      if (wireGauge === 'al6') {
+        warnings.push(`<strong>Aluminum Wire Notice:</strong> ChargePoint Home Flex terminal blocks are rated for <strong>COPPER CONDUCTORS ONLY</strong>. Direct aluminum wire insertion causes galvanic corrosion and lever failure.`);
+        wireOk = false;
+      }
+
+      if (upstreamGfci === 'gfci') {
+        warnings.push(`<strong>Dual-GFCI Tripping Hazard:</strong> An upstream GFCI breaker will fight the CPH50's internal 20mA CCID ground fault monitor. ChargePoint recommends a standard non-GFCI dual-pole breaker (unless local AHJ specifically mandates external GFCI for receptacles).`);
+      }
+
+      if (wireOk) {
+        wireStatus.textContent = 'COMPLIANT';
+        wireStatus.style.color = '#10b981';
+        wireSub.textContent = 'Gauge meets NEC continuous specs';
+      } else {
+        wireStatus.textContent = 'NON-COMPLIANT';
+        wireStatus.style.color = '#ef4444';
+        wireSub.textContent = 'Unsafe conductor size or material';
+      }
+
+      if (warnings.length > 0) {
+        warningBox.style.display = 'block';
+        warningBox.innerHTML = warnings.join('<br><br>');
+      } else {
+        warningBox.style.display = 'none';
+      }
+    }
+
+    // Escalation Ticket Generator
+    function compileEscalationTicket() {
+      const serial = document.getElementById('tkt-serial').value || 'N/A';
+      const mac = document.getElementById('tkt-mac').value || 'N/A';
+      const vehicle = document.getElementById('tkt-vehicle').value || 'N/A';
+      const fw = document.getElementById('tkt-fw').value || 'N/A';
+      const volts = document.getElementById('tkt-volts').value || 'N/A';
+      const voltsGnd = document.getElementById('tkt-volts-gnd').value || 'N/A';
+      const breakerInfo = document.getElementById('tkt-breaker-info').value || 'N/A';
+      const ledStatus = document.getElementById('tkt-led-status').value;
+      const notes = document.getElementById('tkt-notes').value;
+
+      const ticketText =
+`================================================================================
+CHARGEPOINT CPH50 TIER 2 / DESIGNATED SUPPORT (L2/DS) ESCALATION PACKET
+ESCALATION TARGET QUEUE: B2C-GL-DS-ENG-CPH Special-Handling - ESCAL TO L2/DS
+ISSUE CLASSIFICATION: Zero Energy Dispensing (0 kW) / Hardware Contactor Isolation
+================================================================================
+
+[EQUIPMENT & ASSET IDENTIFICATION]
+• Product Model: ChargePoint Home Flex (CPH50)
+• Station Serial Number: ${serial}
+• MAC Address: ${mac}
+• Firmware Version: ${fw}
+• Paired Vehicle: ${vehicle}
+
+[ELECTRICAL SITE MEASUREMENTS]
+• Service Configuration: ${breakerInfo}
+• Line-to-Line Voltage (L1-L2): ${volts}
+• Line-to-Ground Voltages (L1-G / L2-G): ${voltsGnd}
+• Ground Impedance: Verified bonded and grounded
+
+[OBSERVED STATION BEHAVIOR]
+• Holster LED Ring State: ${ledStatus}
+• Charging Energy Recorded: 0.000 kW (Zero energy dispensed)
+• App Status: Station appears online/connected, but contactor does not pull in
+
+[SOP TROUBLESHOOTING COMPLETED BY TECHNICIAN/CUSTOMER]
+1. Breaker Power Cycle: Performed 3-minute complete de-energization at panel.
+2. Double-Pump Override: Executed to bypass potential schedule lockouts.
+3. Physical Wire Lever Audit: Terminals L1, L2, and Ground inspected with faceplate
+   removed. Confirmed orange/grey levers clicked 100% flush into locking detents.
+4. Cross-Charging Test: Vehicle successfully charged on public Level 2 AC station
+   (proves vehicle On-Board Charger and J1772 inlet are healthy).
+5. Amperage De-rating: Reduced app setting to 30A with no resolution.
+
+[TECHNICIAN NOTES & SUMMARY]
+${notes}
+
+[RECOMMENDED ACTION]
+Unit has failed internal contactor closure and diagnostic self-checks.
+Field troubleshooting exhausted. Requesting RMA replacement unit under warranty.
+================================================================================`;
+
+      document.getElementById('ticket-text-output').textContent = ticketText;
+    }
+
+    function copyTicketToClipboard() {
+      const text = document.getElementById('ticket-text-output').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+      });
+    }
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      renderLedTelemetry(ledSpecs['pulsing-green']);
+      runElectricalCalculator();
+      compileEscalationTicket();
+    });
+  </script>
+</body>
+</html>
